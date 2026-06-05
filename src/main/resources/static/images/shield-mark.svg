@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="Secure Login shield">
+  <defs>
+    <linearGradient id="g" x1="10" y1="8" x2="72" y2="74" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6f3cff"/>
+      <stop offset="0.48" stop-color="#ff4fa3"/>
+      <stop offset="1" stop-color="#18c98b"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#g)" d="M40 5 67 16v20c0 18-10.8 31.4-27 39C23.8 67.4 13 54 13 36V16L40 5Z"/>
+  <path fill="#fff" fill-opacity=".95" d="M28 37h24v20H28V37Zm5-1v-5a7 7 0 0 1 14 0v5h-5v-5a2 2 0 0 0-4 0v5h-5Z"/>
+  <circle cx="40" cy="47" r="3.5" fill="#6f3cff"/>
+</svg>
