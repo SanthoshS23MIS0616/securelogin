@@ -1,0 +1,10 @@
+target/
+build/
+dist/
+data/
+.mvn/
+.m2repo/
+*.log
+.env
+.idea/
+.vscode/
