@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login | Register</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script defer th:src="@{/js/app.js}"></script>
+</head>
+<body class="auth-page">
+<main class="auth-shell register-shell">
+    <section class="visual-panel compact-visual">
+        <div class="brand-lock">
+            <img th:src="@{/images/shield-mark.svg}" alt="" class="brand-mark">
+            <span>Secure Login</span>
+        </div>
+        <h1>Create a safer account.</h1>
+        <p>Strong validation and bcrypt hashing protect credentials before they ever touch the database.</p>
+        <div class="mini-metrics">
+            <span>bcrypt</span>
+            <span>SQL-safe JPA</span>
+            <span>CSRF forms</span>
+        </div>
+    </section>
+
+    <section class="form-panel">
+        <div class="panel-heading">
+            <p class="eyebrow">Start protected</p>
+            <h2>Register</h2>
+        </div>
+
+        <form th:action="@{/register}" th:object="${registrationForm}" method="post" class="stacked-form" novalidate>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="alert error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+            <label>
+                <span>Full name</span>
+                <input type="text" th:field="*{fullName}" autocomplete="name" placeholder="Your name" required>
+                <small class="field-error" th:errors="*{fullName}"></small>
+            </label>
+            <label>
+                <span>Email</span>
+                <input type="email" th:field="*{email}" autocomplete="email" placeholder="you@example.com" required>
+                <small class="field-error" th:errors="*{email}"></small>
+            </label>
+            <div class="field-group">
+                <label for="password">Password</label>
+                <span class="password-wrap">
+                    <input class="strength-input" type="password" th:field="*{password}" autocomplete="new-password" placeholder="12+ strong characters" required>
+                    <button class="icon-button reveal-password" type="button" aria-label="Show password" title="Show password">View</button>
+                </span>
+                <span class="strength-track" aria-hidden="true"><span></span></span>
+                <small class="strength-label">Password strength</small>
+                <small class="field-error" th:errors="*{password}"></small>
+            </div>
+            <label>
+                <span>Confirm password</span>
+                <input type="password" th:field="*{confirmPassword}" autocomplete="new-password" placeholder="Repeat password" required>
+                <small class="field-error" th:errors="*{confirmPassword}"></small>
+            </label>
+            <label class="check-row">
+                <input type="checkbox" th:field="*{securityPromise}">
+                <span>I will keep my credentials private.</span>
+            </label>
+            <small class="field-error" th:errors="*{securityPromise}"></small>
+            <button class="primary-button" type="submit">Create secure account</button>
+        </form>
+
+        <p class="switch-link">Already registered? <a th:href="@{/login}">Sign in</a></p>
+    </section>
+</main>
+<footer class="site-footer">&lt;&lt;Santhosh S - Software Engineer&gt;&gt;</footer>
+</body>
+</html>
