@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login | Security</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script defer th:src="@{/js/app.js}"></script>
+</head>
+<body class="app-page">
+<header class="topbar">
+    <a class="brand-lock" th:href="@{/dashboard}">
+        <img th:src="@{/images/shield-mark.svg}" alt="" class="brand-mark">
+        <span>Secure Login</span>
+    </a>
+    <nav class="nav-actions">
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <form th:action="@{/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button class="ghost-button" type="submit">Logout</button>
+        </form>
+    </nav>
+</header>
+
+<main class="settings-layout">
+    <section class="settings-hero">
+        <p class="eyebrow">Security center</p>
+        <h1>Account protection</h1>
+        <p th:text="${user.twoFactorEnabled} ? 'Your account has password and authenticator protection.' : 'Add an authenticator code for stronger sign-in protection.'"></p>
+    </section>
+
+    <div class="alert success" th:if="${success}" th:text="${success}"></div>
+    <div class="alert notice" th:if="${notice}" th:text="${notice}"></div>
+    <div class="alert error" th:if="${securityError}" th:text="${securityError}"></div>
+
+    <section class="settings-grid">
+        <article class="settings-card">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Useful feature</p>
+                    <h2>Change password</h2>
+                </div>
+            </div>
+            <form th:action="@{/security/password}" th:object="${passwordChangeForm}" method="post" class="stacked-form" novalidate>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <div class="alert error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+                <label>
+                    <span>Current password</span>
+                    <input type="password" th:field="*{currentPassword}" autocomplete="current-password" required>
+                    <small class="field-error" th:errors="*{currentPassword}"></small>
+                </label>
+                <div class="field-group">
+                    <label for="newPassword">New password</label>
+                    <input class="strength-input" type="password" th:field="*{newPassword}" autocomplete="new-password" required>
+                    <span class="strength-track" aria-hidden="true"><span></span></span>
+                    <small class="strength-label">Password strength</small>
+                    <small class="field-error" th:errors="*{newPassword}"></small>
+                </div>
+                <label>
+                    <span>Confirm new password</span>
+                    <input type="password" th:field="*{confirmPassword}" autocomplete="new-password" required>
+                    <small class="field-error" th:errors="*{confirmPassword}"></small>
+                </label>
+                <button class="primary-button" type="submit">Update password</button>
+            </form>
+        </article>
+
+        <article class="settings-card">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Optional 2FA</p>
+                    <h2>Authenticator app</h2>
+                </div>
+                <span class="pill" th:classappend="${user.twoFactorEnabled} ? ' pill-good' : ' pill-warn'" th:text="${user.twoFactorEnabled} ? 'Enabled' : 'Off'">Off</span>
+            </div>
+
+            <div th:if="${!user.twoFactorEnabled}">
+                <form th:if="${setupSecret == null}" th:action="@{/security/2fa/start}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button class="secondary-button full" type="submit">Start 2FA setup</button>
+                </form>
+
+                <div class="setup-box" th:if="${setupSecret != null}">
+                    <label>
+                        <span>Setup key</span>
+                        <span class="copy-row">
+                            <input class="copy-source" type="text" th:value="${setupSecret}" readonly>
+                            <button class="icon-button copy-button" type="button">Copy</button>
+                        </span>
+                    </label>
+                    <label>
+                        <span>OTP URI</span>
+                        <input type="text" th:value="${otpAuthUri}" readonly>
+                    </label>
+                    <form th:action="@{/security/2fa/enable}" method="post" class="stacked-form tight-form">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <label>
+                            <span>Authenticator code</span>
+                            <input class="code-input" name="code" inputmode="numeric" maxlength="6" pattern="[0-9]*" placeholder="000000" required>
+                        </label>
+                        <button class="primary-button" type="submit">Enable 2FA</button>
+                    </form>
+                </div>
+            </div>
+
+            <form th:if="${user.twoFactorEnabled}" th:action="@{/security/2fa/disable}" method="post" class="stacked-form">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <label>
+                    <span>Current password</span>
+                    <input type="password" name="currentPassword" autocomplete="current-password" required>
+                </label>
+                <label>
+                    <span>Authenticator code</span>
+                    <input class="code-input" name="code" inputmode="numeric" maxlength="6" pattern="[0-9]*" required>
+                </label>
+                <button class="danger-button" type="submit">Disable 2FA</button>
+            </form>
+        </article>
+    </section>
+</main>
+<footer class="site-footer">&lt;&lt;Santhosh S - Software Engineer&gt;&gt;</footer>
+</body>
+</html>

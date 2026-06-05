@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login | 2FA</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script defer th:src="@{/js/app.js}"></script>
+</head>
+<body class="auth-page">
+<main class="auth-shell narrow-shell">
+    <section class="form-panel centered-panel">
+        <div class="brand-lock small-brand">
+            <img th:src="@{/images/shield-mark.svg}" alt="" class="brand-mark">
+            <span>Secure Login</span>
+        </div>
+        <div class="panel-heading">
+            <p class="eyebrow">Second step</p>
+            <h2>Authenticator code</h2>
+        </div>
+
+        <div class="alert notice" th:if="${notice}" th:text="${notice}"></div>
+        <form th:action="@{/2fa}" th:object="${twoFactorForm}" method="post" class="stacked-form" novalidate>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="alert error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+            <label>
+                <span>6-digit code</span>
+                <input class="code-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" th:field="*{code}" autocomplete="one-time-code" placeholder="000000" required>
+                <small class="field-error" th:errors="*{code}"></small>
+            </label>
+            <button class="primary-button" type="submit">Verify and enter</button>
+        </form>
+        <p class="switch-link"><a th:href="@{/login}">Back to sign in</a></p>
+    </section>
+</main>
+<footer class="site-footer">&lt;&lt;Santhosh S - Software Engineer&gt;&gt;</footer>
+</body>
+</html>

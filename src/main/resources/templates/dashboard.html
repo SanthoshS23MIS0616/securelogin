@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login | Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script defer th:src="@{/js/app.js}"></script>
+</head>
+<body class="app-page">
+<header class="topbar">
+    <a class="brand-lock" th:href="@{/dashboard}">
+        <img th:src="@{/images/shield-mark.svg}" alt="" class="brand-mark">
+        <span>Secure Login</span>
+    </a>
+    <nav class="nav-actions">
+        <a th:href="@{/security}">Security</a>
+        <form th:action="@{/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button class="ghost-button" type="submit">Logout</button>
+        </form>
+    </nav>
+</header>
+
+<main class="dashboard-grid">
+    <section class="welcome-band">
+        <div>
+            <p class="eyebrow">Account dashboard</p>
+            <h1 th:text="'Hello, ' + ${user.fullName}">Hello</h1>
+            <p th:text="${user.twoFactorEnabled} ? '2FA is active on this account.' : 'Turn on 2FA to raise your protection score.'"></p>
+        </div>
+        <a class="secondary-button" th:href="@{/security}">Manage security</a>
+    </section>
+
+    <section class="score-card">
+        <div class="score-ring" th:style="'--offset:' + ${ringOffset}">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="ring-bg" cx="60" cy="60" r="50"></circle>
+                <circle class="ring-value" cx="60" cy="60" r="50"></circle>
+            </svg>
+            <div>
+                <strong th:text="${securityScore}">90</strong>
+                <span>score</span>
+            </div>
+        </div>
+        <div>
+            <p class="eyebrow">Security passport</p>
+            <h2 th:text="${securityLevel}">Strong</h2>
+            <p class="muted">Your score reacts to 2FA, clean login history, and recent sign-in protection.</p>
+        </div>
+    </section>
+
+    <section class="status-strip">
+        <article>
+            <span class="status-dot good"></span>
+            <h3>Password hashing</h3>
+            <p>bcrypt strength 12</p>
+        </article>
+        <article>
+            <span class="status-dot" th:classappend="${user.twoFactorEnabled} ? ' good' : ' warn'"></span>
+            <h3>Two-factor</h3>
+            <p th:text="${user.twoFactorEnabled} ? 'Enabled' : 'Not enabled'">Enabled</p>
+        </article>
+        <article>
+            <span class="status-dot good"></span>
+            <h3>Session</h3>
+            <p>Active, logout ready</p>
+        </article>
+    </section>
+
+    <section class="table-section">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Useful feature</p>
+                <h2>Login activity audit</h2>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Reason</th>
+                    <th>IP address</th>
+                    <th>When</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(events)}">
+                    <td colspan="4">No login events yet.</td>
+                </tr>
+                <tr th:each="event : ${events}">
+                    <td>
+                        <span class="pill" th:classappend="${event.success} ? ' pill-good' : ' pill-bad'" th:text="${event.success} ? 'Success' : 'Blocked'">Success</span>
+                    </td>
+                    <td th:text="${event.reason}">Login successful</td>
+                    <td th:text="${event.ipAddress}">127.0.0.1</td>
+                    <td th:text="${#temporals.format(event.createdAt, 'dd MMM yyyy HH:mm')}">05 Jun 2026 10:30</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+<footer class="site-footer">&lt;&lt;Santhosh S - Software Engineer&gt;&gt;</footer>
+</body>
+</html>
