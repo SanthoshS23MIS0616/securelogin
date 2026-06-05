@@ -2,6 +2,14 @@
 
 A high-level Java Spring Boot cybersecurity internship project that demonstrates secure user registration, secure login, session handling, optional two-factor authentication, and account activity monitoring through a polished web interface.
 
+## Live Deployment
+
+```text
+https://securelogin-0f7w.onrender.com
+```
+
+Deployment note: This project is hosted on Render free tier, so the first request may take 30-60 seconds due to cold start. After startup, the application runs normally.
+
 ## Project Highlights
 
 - User registration and login with bcrypt password hashing.
@@ -30,17 +38,17 @@ A high-level Java Spring Boot cybersecurity internship project that demonstrates
 
 ```text
 src/main/java/com/intern/securelogin
-├── config          Security configuration
-├── controller      Web page controllers
-├── dto             Validated form objects
-├── entity          User and login audit entities
-├── repository      JPA repositories
-└── service         Login, 2FA, audit, and account logic
+|-- config          Security configuration
+|-- controller      Web page controllers
+|-- dto             Validated form objects
+|-- entity          User and login audit entities
+|-- repository      JPA repositories
+`-- service         Login, 2FA, audit, and account logic
 
 src/main/resources
-├── templates       Thymeleaf pages
-├── static          CSS, JavaScript, and image assets
-└── application*.properties
+|-- templates       Thymeleaf pages
+|-- static          CSS, JavaScript, and image assets
+`-- application*.properties
 ```
 
 ## Run Locally
@@ -102,22 +110,37 @@ The runnable jar is created at:
 dist/secure-login-1.0.0-boot.jar
 ```
 
-## Deployment Recommendation
+## Deploy on Render
 
-The easiest hosting option for this Java project is Render using Docker.
+The easiest hosting option for this Java project is Render using Docker and Render PostgreSQL.
 
 1. Push this project to GitHub.
 2. Create a PostgreSQL database on Render.
 3. Create a new Render Web Service from the GitHub repository.
 4. Select Docker as the runtime.
-5. Add these environment variables:
+5. Add the environment variables below.
+
+Required:
 
 ```text
 SPRING_PROFILES_ACTIVE=prod
-JDBC_DATABASE_URL=jdbc:postgresql://YOUR_RENDER_DB_HOST:5432/YOUR_DATABASE
+```
+
+Recommended database setup:
+
+```text
+JDBC_DATABASE_URL=jdbc:postgresql://YOUR_RENDER_INTERNAL_HOST:5432/YOUR_DATABASE
 JDBC_DATABASE_USERNAME=YOUR_DATABASE_USER
 JDBC_DATABASE_PASSWORD=YOUR_DATABASE_PASSWORD
 ```
+
+Render internal URL shortcut:
+
+```text
+JDBC_DATABASE_URL=postgresql://USER:PASSWORD@HOST/DATABASE
+```
+
+The app automatically converts Render's `postgresql://...` or `postgres://...` URL into the JDBC format required by Spring.
 
 Render will build the project using the included `Dockerfile`.
 
@@ -129,6 +152,7 @@ Render will build the project using the included `Dockerfile`.
 - Authenticated sessions can be ended through logout.
 - TOTP 2FA can be enabled from the Security page.
 - Database access uses JPA repositories instead of raw SQL string concatenation.
+- Secret values should only be added in Render environment variables, never committed to GitHub.
 
 ## Author
 
